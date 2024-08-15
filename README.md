@@ -13,7 +13,7 @@ Steps to Run a C++ File:
 * g++ program_name.cpp -o executable_filename
 * ./executable_filename
 
-1. Q1:
+**Q1:**
 
 This program takes arguments in the following format: 
 
@@ -29,7 +29,7 @@ Description:
 
 Output: Progress percent showing real-time progress of file reversed.
 
-2. Q2:
+**Q2:**
 
 This program takes arguments in the following format: 
 
