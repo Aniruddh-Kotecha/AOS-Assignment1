@@ -3,6 +3,8 @@
 
 The project implements reversing the content's of a file and storing the result in a new file using system calls in C++
 
+**System calls used:** _read()_, _open()_, _write()_, _lseek()_, _stat()_, _fstat()_, _perror()_, _close()_
+
 Prerequisites:
 
 1. C++ compiler (like GCC) 
