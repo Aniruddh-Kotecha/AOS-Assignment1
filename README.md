@@ -46,3 +46,5 @@ Description
 
 Output: Display if the directory is created, if the new file is correctly reversed and if the size is equal to old file.
 Also, display the 9 different permissions of the directory, the new file and the old file. 
+
+Copyright &copy; 2024 Aniruddh Kotecha
