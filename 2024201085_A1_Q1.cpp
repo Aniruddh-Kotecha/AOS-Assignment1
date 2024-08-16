@@ -117,6 +117,29 @@ int writeFile(int in_fd, int out_fd, long long start, long long end, bool isReve
 
 int main(int argc, char* argv[]){
 
+    //get file name 
+    char* file_path = argv[1];
+
+    //open input file
+    int in_file_decriptor = open(file_path, O_RDONLY);
+    if(in_file_decriptor == -1){
+        perror("Error when opening input file");
+        return 1;
+    }
+
+    struct stat in_st;
+    if (fstat(in_file_decriptor, &in_st) < 0) {
+        perror("Error: Incorrect input file");
+        close(in_file_decriptor);
+        return 1;
+    }
+
+    if(!S_ISREG(in_st.st_mode)){
+        printMessage("Path for input file is not a regular file\n");
+        close(in_file_decriptor);
+        return 1;
+    }
+
     //create a dir if not already present.
     string dir = "Assignment1";
     char* dir_name = &dir[0];
@@ -132,8 +155,7 @@ int main(int argc, char* argv[]){
         return 1;
     }
 
-    //get file name and create output file
-    char* file_path = argv[1];
+    //create output file name
     char out_file_name[255] = "";
 
     char* file_name = getFileName(file_path);
@@ -207,13 +229,6 @@ int main(int argc, char* argv[]){
     char* file_prefix_name = &file_prefix[0];
     strcat(out_file_name,file_prefix_name);
     strcat(out_file_name,file_name);
-    
-    //open input file
-    int in_file_decriptor = open(file_path, O_RDONLY);
-    if(in_file_decriptor == -1){
-        perror("Error when opening input file");
-        return 1;
-    }
 
     int out_file_creator = creat(out_file_name, 0000600);
     if(out_file_creator == -1){
