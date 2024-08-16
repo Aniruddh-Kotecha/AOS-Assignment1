@@ -21,6 +21,9 @@ void getReverse(char* data, int data_size){
 }
 
 bool checkReverse(int old_fd, int new_fd, long long old_size, long long new_size){
+
+    if(old_size != new_size)
+        return false;
     
     long long offset = new_size;
     int  no_of_bytes;
@@ -38,6 +41,7 @@ bool checkReverse(int old_fd, int new_fd, long long old_size, long long new_size
         if(lseek(new_fd, curr_position, SEEK_SET) == -1) {
                 perror("lseek");
                 close(new_fd);
+                close(old_fd);
                 return -1;
         }
 
@@ -127,20 +131,6 @@ int main(int argc, char* argv[]){
     long long new_size;
     long long old_size;
 
-    if(stat(dir, &dirStatus) == 0){
-        if(S_ISDIR(dirStatus.st_mode))
-            printMessage("Directory is created: Yes\n");
-        else{
-            printMessage("Path is not a directory\n");
-            return 1;
-        }
-            
-    }
-        
-    else{
-        printMessage("Directory is created: No\n");
-    }
-
     int new_fd = open(file_out, O_RDONLY);
     if(new_fd == -1){
         perror("Error: Could not open new file");
@@ -150,29 +140,51 @@ int main(int argc, char* argv[]){
     int old_fd = open(file_in, O_RDONLY);
     if(old_fd == -1){
         perror("Error: Could not open new file");
+        close(new_fd);
         return 1;
     }
 
     if (fstat(new_fd, &newStatus) < 0) {
         perror("Error: Incorrect new file");
+        close(new_fd);
+        close(old_fd);
         return 1;
     }
 
     if(!S_ISREG(newStatus.st_mode)){
         printMessage("Path for new file is not a regular file\n");
+        close(new_fd);
+        close(old_fd);
         return 1;
     }
     
     new_size = newStatus.st_size;
 
     if (fstat(old_fd, &oldStatus) < 0) {
+        close(new_fd);
+        close(old_fd);
         perror("Error: Incorrect old file");
         return 1;
     }
 
     if(!S_ISREG(oldStatus.st_mode)){
         printMessage("Path for old file is not a regular file\n");
+        close(new_fd);
+        close(old_fd);
         return 1;
+    }
+
+    if(stat(dir, &dirStatus) == 0){
+        if(S_ISDIR(dirStatus.st_mode))
+            printMessage("Directory is created: Yes\n");
+        else{
+            printMessage("Path is not a directory\n");
+            return 1;
+        }
+            
+    }  
+    else{
+        printMessage("Directory is created: No\n");
     }
 
     old_size = oldStatus.st_size;
